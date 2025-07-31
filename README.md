@@ -19,7 +19,18 @@
 - Atender dinâmicamente a demanda de computação.
 - Mitigação de disrupções.
 
-###Performance e eficiência:
+### Performance e eficiência:
 - Escolha e manutenção eficiente de recursos.
 - Democratização de tecnologias avançadas.
 - Empregar simpatia mecânica.
+
+### Otimização de custos
+- Medir eficiência.
+- Eliminar despesas desnecessárias.
+- Adoção de modelo de consumo correto.
+- Considerar serviços gerenciados.
+
+### Sustentabilidade:
+- Estabelecer metas de sustentabilidade.
+- Maximizar a utilização.
+- Escolher hardware eficiente.
