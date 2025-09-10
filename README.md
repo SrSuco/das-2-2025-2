@@ -40,8 +40,6 @@
 - Geralmente tem 2 ou 3 Zonas de Disponibilidade
 ### AZ ou Zona de Disponibildade
 - AWS tem um backbone de rede proprietária para trafegar os dados
-- Lembrar do desenho -> `regiou_sa-east-1 = [availability-zone,availability-zone,availability-zone]`
-- Cada AZ -> `availability-zone = [data-center-1, data-center-2, data-center-3]`
 - AZs são interconetadas, mas são isoladas em caso de falha
 - AZ = Alta Disponibilidade
 - O nome da zona pode rotacionar (manutenção, etc) já o ID não muda
@@ -122,3 +120,4 @@ Amazon Machine Image -> Base para criar o servidor
 - Tem snapchot da imagem
 - A ordem de montagem
 - Permissões
+
