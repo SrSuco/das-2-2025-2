@@ -121,3 +121,56 @@ Amazon Machine Image -> Base para criar o servidor
 - A ordem de montagem
 - Permissões
 
+### Placement Groups
+
+Placement Groups são um recurso que permite controlar onde a AWS aloca suas instâncias dentro de uma Região e suas Zonas de Disponibilidade (AZs). Você pode escolher entre três estratégias diferentes:
+
+- Cluster: Todas as máquinas ficam próximas fisicamente dentro da mesma AZ, o que não garante alta disponibilidade. Se houver uma falha grave na AZ, todas as instâncias podem ser impactadas simultaneamente.
+- Partition: Uma abordagem intermediária onde os dados e processos são divididos em partições lógicas entre múltiplos servidores. Ideal para sistemas como Kafka, Hadoop ou Spark, que trabalham com dados fragmentados e replicados.
+- Spread: Distribui suas instâncias entre o maior número possível de AZs, aumentando a resiliência e a disponibilidade. Se uma AZ falhar, as outras continuam funcionando normalmente.
+
+---
+
+### Pricing
+
+Modelos de compra que oferecem desconto:
+
+- On-Demand: Pague pelo uso conforme precisar, sem compromisso de longo prazo.
+- **Reserved Instances**: Reserve capacidade por um período (ex: 1 ou 3 anos), com opções de pagamento total antecipado, parcelado ou parcialmente adiantado. Menos flexível para alterar tipo de instância ou região.
+- **Savings Plans**: Compromisso de gasto fixo por hora, durante o período contratado, com mais flexibilidade para trocar região e tipo de máquina. Existem variantes como AURI, PURI e NURI.
+- **Amazon EC2 Spot**: Use capacidade ociosa da AWS por um preço reduzido, mas a qualquer momento a AWS pode recuperar essa capacidade.
+
+Modelos de reserva de capacidade: Permitem reservar capacidade específica com desconto.
+
+Modelos dedicados: Reservam servidores físicos completos para você, geralmente com custo maior.
+
+---
+
+### Networking e Content Delivery
+
+- Subnets: Segmentam a rede para controlar o tráfego e impedir comunicação direta entre diferentes partes.
+
+- CIDR Calculator: Ferramenta para calcular o tamanho e o intervalo de IPs da sua rede na nuvem.
+
+---
+
+### Amazon VPC | Virtual Private Cloud
+
+- Rede definida por software construída sobre a infraestrutura física da AWS.
+- Cada VPC está ligada a uma infraestrutura física localizada na mesma região onde seus recursos residem.
+- O tamanho da VPC varia entre /16 (maior) e /28 (menor).
+- Subnet pública: Possui acesso à internet bidirecionalmente. Para criá-la, são necessários:
+  1. Internet Gateway — atua como um roteador (similar ao NAT da sua casa).
+  2. Rotas na tabela de rotas direcionadas ao Internet Gateway.
+  3. IP público associado ao recurso.
+- Subnet privada: Sem comunicação externa, nem mesmo com outros serviços AWS fora da VPC. Instâncias aqui não acessam a internet.
+
+- Peering: Comunicação entre diferentes VPCs, inclusive de clientes distintos na AWS.
+
+---
+
+### AWS Direct Connect
+
+Conexão dedicada e privada que cria um túnel exclusivo entre sua rede local e a AWS, garantindo maior estabilidade e segurança.
+
+
