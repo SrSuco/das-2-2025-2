@@ -173,4 +173,238 @@ Modelos dedicados: Reservam servidores físicos completos para você, geralmente
 
 Conexão dedicada e privada que cria um túnel exclusivo entre sua rede local e a AWS, garantindo maior estabilidade e segurança.
 
+O único componente que não pode falhar é o **banco de dados**, pois sua queda paralisa todo o sistema.
+
+O **frontend**, por outro lado, pode ser facilmente escalado e distribuído em múltiplos servidores.
+
+Sempre que existe um **ponto único de falha**, há também **alto acoplamento**.
+
+A AWS recomenda o uso de um **load balancer**, que funciona assim:
+1. A requisição chega ao load balancer, que verifica o estado das máquinas.
+2. O tráfego é direcionado apenas para as instâncias saudáveis.
+3. É necessário utilizar outra tecnologia para substituir automaticamente as máquinas com problemas.
+
+Arquiteturas baseadas em **microserviços** ajudam a melhorar a disponibilidade, assim como modelos **orientados a eventos**.
+
+---
+
+## Amazon SQS – *Simple Queue Service*
+
+Funciona com um **Produtor** e um **Consumidor**, no formato *point-to-point*, ou seja, uma mensagem gerada será consumida por apenas um consumidor.
+
+O SQS surgiu junto com a própria AWS, com foco em **desacoplamento temporal**.
+
+- Cada mensagem pode ter no máximo **256 KB**. Para tamanhos maiores, o conteúdo é armazenado no **S3**, e o SQS envia apenas o caminho do arquivo.
+
+Existem dois tipos de fila:
+
+- **Standard:**  
+  - Não garante ordem  
+  - Não assegura entrega única  
+  - Sem limitação de throughput
+
+- **FIFO:**  
+  - Mantém a ordem  
+  - Garante entrega única  
+  - Suporta até **3.000 mensagens por segundo**
+
+Após diversas tentativas de processamento, a mensagem é enviada para a **Dead Letter Queue (DLQ)**.
+
+Também é possível separar filas para **clientes pagos** e **clientes gratuitos**.
+
+Características:
+- **Producer–Consumer**
+- **One-to-One**
+- **Pull (ativo)**
+
+---
+
+## Amazon SNS – *Simple Notification Service*
+
+Capaz de processar **12 milhões de mensagens por segundo**.  
+Permite envio via **e-mail**, **SMS**, **HTTP**, entre outros.
+
+É ideal para padrões de **Fan-out**.
+
+Diferente do SQS, o **tópico não armazena mensagens**; quem armazena são os consumidores (como filas), que também lidam com *retry*, *timeout*, etc.
+
+Características:
+- **Publisher–Subscriber**
+- **One-to-Many**
+- **Push (passivo)**
+
+A **arquitetura Serverless** é útil especialmente para reduzir o impacto quando regiões como **Norte da Virgínia** apresentam instabilidades.
+
+### Principais serviços:
+
+- **Cognito** – Usado para autenticação, podendo atuar com IP empresarial.  
+- **Amplify** – Facilita o desenvolvimento frontend, geração de código e web hosting.  
+- **AppSync** – Solução de APIs utilizando **GraphQL**, oferecendo geração e gerenciamento.  
+- **Step Functions** – Ferramenta para **orquestração** de fluxos.  
+- **EventBridge** – Barramento de eventos em **tempo real**, permitindo capturar eventos conforme ocorrem.
+
+### Arquitetura comum:
+- **API Gateway + Lambda + DynamoDB** → Lógica da aplicação  
+- **S3 + CloudFront** → Interface (frontend)  
+- **Cognito** → Autenticação
+
+---
+
+## Microsserviços
+
+A ideia é dividir um sistema em **módulos independentes**, transformando o monolito em pequenos serviços completamente isolados.  
+O principal motivo para adotar microsserviços é a **complexidade crescente** do sistema, que torna o monolito difícil de manter.
+
+### Benefícios:
+
+- Maior **agilidade** para os times  
+- **Escalabilidade** flexível  
+- **Liberdade de tecnologia** (cada serviço pode usar sua própria stack)  
+- Mais **resiliência**, evitando que uma falha derrube todo o sistema  
+
+---
+
+# Três formas de implementar microsserviços
+
+1. **Síncrono**  
+   - A requisição passa pelo API Gateway, aciona a Lambda, consulta o DynamoDB e retorna ao cliente.
+
+2. **Streaming**  
+   - As requisições chegam em fluxo contínuo e novas instâncias de Lambda são criadas conforme a demanda.
+
+3. **Containerizado**  
+   - Os microsserviços rodam dentro de containers.
+
+---
+
+# Lambda
+
+- Tempo máximo de execução: **15 minutos**  
+- Memória máxima: **10 GB**  
+- Atualmente há casos de uso de **LLMs dentro de Lambdas** para realizar inferência.
+
+---
+
+# Route 53 – DNS público da AWS
+
+Quando ocorre uma consulta, o DNS local tenta resolver o endereço. Caso não consiga, a busca segue para a internet.
+
+O Route 53 pode trabalhar com:
+- **DNS público** (*public hosted zone*)
+- **DNS privado** (*private hosted zone*)
+
+### Tipos de roteamento possíveis:
+
+- **Geolocalização** – Retorna um IP específico para cada país.  
+- **Latência** – Direciona para o servidor mais próximo e rápido.  
+- **Peso (Weighted)** – Distribui porcentagens do tráfego entre destinos.  
+- **Failover** – Caso o destino principal falhe (ex: *us-east-1*), redireciona para outro (ex: *sa-east-1*).  
+- **Simples** – Relação 1:1 entre nome e IP.  
+- **Multivalue** – Retorna vários IPs e o cliente escolhe um.  
+- **IP-Based** – Resposta baseada no IP de origem.
+
+Também é possível criar **mapas de roteamento baseados em IP**, definindo áreas específicas.
+
+---
+
+## Kit de sobrevivência para qualquer sistema DNS
+
+- **Comprei um domínio, como aponto para meu site?**
+  - Criar um registro **A** → aponta para um IPv4.  
+  - Criar um registro **AAAA** → aponta para um IPv6.  
+  - **CNAME** → Um nome DNS aponta para outro, delegando a resolução.  
+  - **TXT** → Armazena informações diversas (ex: validação de propriedade do domínio).
+
+---
+
+# Automate Your Architecture
+
+Depois de dominar os serviços, o próximo passo é **automatizar rotinas**, evitando ações manuais para lidar com falhas ou mudanças.
+
+### Problemas de fazer tudo manualmente:
+
+- Inconsistências  
+- Falta de versionamento  
+- Falta de rastreamento (audit trails)
+
+---
+
+## Infra as Code (IaC)
+
+A ideia é **definir infraestruturas por meio de templates**; a ferramenta executa a criação para você.
+
+- **CloudFormation** → Funciona de forma semelhante ao Terraform, porém é totalmente integrado e focado na AWS.
+
+### Benefícios da IaC:
+
+- Repetibilidade  
+- Deploy rápido de infraestruturas complexas  
+- Remoção limpa de todos os recursos via *stack*  
+- Reutilização, consistência e melhor manutenção  
+
+### Stack
+
+Uma *stack* é a representação lógica de todos os recursos criados por um template, exibida na interface do CloudFormation.
+
+### CloudFormation
+
+- Serviço gratuito  
+- Base de funcionamento do **Elastic Beanstalk** (que cria automaticamente servidores, como para apps Spring Boot)  
+- É interessante aprender também **Beanstalk** e **SAM** para trabalhar com AWS
+
+---
+
+## Using Conditions
+
+Permite que um mesmo template gere ambientes diferentes, como **dev** e **prod**.
+
+---
+
+## Drift
+
+O CloudFormation detecta quando algo foi alterado fora do template e notifica o usuário.
+
+---
+
+# Amazon Q
+
+A Amazon investe há muitos anos em IA.  
+Um exemplo clássico é o modelo que identificava se um gato estava carregando um rato, usando imagens rotuladas para ensinar o sistema a reconhecer o cenário e controlar uma portinhola automática.
+
+### Amazon Q Developer
+
+Ferramenta destinada a desenvolvedores:
+- Analisa códigos em busca de vulnerabilidades  
+- Integrado diretamente ao console da AWS  
+- Auxilia em manutenção, refatorações e correções de bugs  
+
+---
+
+### Por que utilizar caching?
+
+- Quando o volume de requisições por segundo é muito alto, não é viável consultar o banco repetidamente com a mesma query.  
+- Ideal para dados **altamente estáticos**.  
+- Ajuda a evitar consultas mais lentas e pesadas.  
+
+O objetivo é **obter dados de um local mais próximo e mais rápido**, reduzindo carga no banco de dados.
+
+É essencialmente o que já foi visto sobre Redis nas aulas do Glaucio, mas agora aplicado no contexto AWS (“versão Herbert Bezos”).
+
+---
+
+## Elasticache
+
+Usado como uma camada na frente do banco de dados.
+
+Aplicações comuns:
+- Quando há **problemas de tempo de resposta**.  
+- Quando o **banco está sobrecarregado** e não suporta mais a demanda.  
+- Quando se busca **reduzir custos** de banco de dados.  
+
+### Tecnologias suportadas:
+
+- **Memcached** – Armazenamento simples **<K, V>**.  
+- **Redis** – Armazena em disco além da memória; suporta **estruturas de dados complexas**.  
+- **Valkey** – Alternativa mais barata ao Redis.
+
 
