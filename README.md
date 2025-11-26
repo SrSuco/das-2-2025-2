@@ -407,4 +407,109 @@ Aplicações comuns:
 - **Redis** – Armazena em disco além da memória; suporta **estruturas de dados complexas**.  
 - **Valkey** – Alternativa mais barata ao Redis.
 
+---
+
+# Conceitos Complementares de Segurança e Identidade
+
+## RBAC x ABAC
+
+- **RBAC (Role-Based Access Control)**  
+  - Permissões baseadas em **papéis**.  
+  - Usuários recebem funções (ex: admin, leitor, operador).  
+  - Mais simples de gerenciar, porém menos flexível.  
+
+- **ABAC (Attribute-Based Access Control)**  
+  - Decisões baseadas em **atributos** (usuário, recurso, contexto, horário, IP, etc).  
+  - Muito mais granular e dinâmico.  
+  - Ideal para ambientes com regras complexas.
+
+---
+
+## Identidade Federada
+
+- Permite **usar identidades externas** (Google, AD, GitHub, etc) para acessar recursos.  
+- Evita recriar credenciais dentro da AWS ou de outros sistemas.  
+- Utiliza padrões como **SAML**, **OAuth**, **OIDC**.  
+- Melhora experiência do usuário e reduz esforço de administração.
+
+---
+
+## Criptografia Simétrica x Assimétrica
+
+- **Simétrica**
+  - Mesma chave para criptografar e descriptografar.  
+  - Muito rápida.  
+  - Boa para grandes volumes de dados.  
+  - Desafio: **como compartilhar a chave** com segurança.
+
+- **Assimétrica**
+  - Par de chaves: **pública** (criptografa) e **privada** (descriptografa).  
+  - Mais segura para troca de chaves e identidade.  
+  - É usada para assinar dados e estabelecer conexões seguras.
+
+---
+
+## Detecção de Vulnerabilidade Estática
+
+- Também chamada de **SAST (Static Application Security Testing)**.  
+- Analisa o **código-fonte** sem executá-lo.  
+- Identifica problemas como SQL Injection, má validação de input, uso inseguro de libs.  
+- Útil durante o desenvolvimento para prevenir falhas antes do deploy.
+
+---
+
+## Detecção de Intrusão
+
+- Monitora comportamentos suspeitos em sistemas e redes.  
+- Pode ser:
+  - **IDS (Intrusion Detection System)** – detecta e alerta.  
+  - **IPS (Intrusion Prevention System)** – detecta e bloqueia.  
+- Pesquisa logs, padrões anômalos, tráfego incomum.  
+- Importante para identificar ataques em tempo real (DDoS, acesso irregular, scans, etc).
+
+
+---
+
+# Conceitos de Observabilidade e Arquitetura Distribuída
+
+## Métricas
+
+- Indicadores numéricos usados para acompanhar a **saúde**, **performance** e **uso** dos sistemas.  
+- Exemplos: latência, throughput, CPU, memória, erros por segundo.  
+- Essenciais para alertas, dashboards e decisões de escalabilidade.
+
+---
+
+## Logs
+
+- Registros textuais de eventos da aplicação.  
+- Ajudam a diagnosticar erros, rastrear fluxos, entender comportamento do usuário.  
+- Devem ser centralizados (ex: CloudWatch, ELK Stack) para análise eficiente.
+
+---
+
+## Elasticidade
+
+- Capacidade do sistema de **aumentar ou reduzir recursos automaticamente** conforme a demanda.  
+- Evita desperdício e reduz custos.  
+- Muito utilizada em arquiteturas serverless e autoscaling.
+
+---
+
+## Escalabilidade Horizontal
+
+- Adicionar **mais instâncias** do mesmo serviço para suportar maior carga.  
+- Geralmente preferível à escalabilidade vertical (aumentar tamanho de uma máquina).  
+- Facilita resiliência e distribuição de tráfego.
+
+---
+
+## Balanceador de Carga
+
+- Distribui requisições entre múltiplas instâncias.  
+- Evita sobrecarga em um único servidor.  
+- Pode considerar saúde, latência, peso, entre outros critérios.  
+- Funda­mental para alta disponibilidade e escalabilidade.
+
+
 
